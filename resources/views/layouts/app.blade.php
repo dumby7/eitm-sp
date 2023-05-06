@@ -15,6 +15,8 @@
 
     <!-- Scripts -->
     @vite(['resources/js/app.js'])
+
+    @laravelPWA
 </head>
 <body>
     <div id="app">
