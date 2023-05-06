@@ -31,6 +31,11 @@ Run the docker container in a detached mode:
 (For convenience set up an alias for the sail command: https://laravel.com/docs/10.x/sail#configuring-a-shell-alias)
 
 
+Compile css and js:
+```bash
+sail npm install && sail npm run build
+```
+
 Generate app key:
 ```bash
 sail artisan key:generate
