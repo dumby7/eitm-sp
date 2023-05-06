@@ -46,3 +46,6 @@ Seed database tables with initial data:
 ```bash
 sail artisan db:seed
 ```
+
+From your browser navigate to http://localhost/
+PHPMyAdmin is exposed at http://localhost:8001/
