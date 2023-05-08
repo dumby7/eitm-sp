@@ -6,6 +6,8 @@ COPY composer.lock composer.json /var/www/html/
 # Set working directory
 WORKDIR /var/www/html
 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -21,7 +23,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     libzip-dev \
     libonig-dev \
-    nodejs npm
+    nodejs
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
