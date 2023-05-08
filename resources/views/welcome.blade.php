@@ -10,6 +10,9 @@
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut aliquet enim elit, non suscipit lectus
                 eleifend luctus. Nunc feugiat odio id tellus placerat, in varius purus mattis. Sed volutpat sed.
             </p>
+            <p>
+                Hello there!
+            </p>
         </div>
     </div>
 @endsection
