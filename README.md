@@ -54,3 +54,6 @@ sail artisan db:seed
 
 From your browser navigate to http://localhost/
 PHPMyAdmin is exposed at http://localhost:8001/
+
+
+Used https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose-on-ubuntu-20-04 for production deployment.
