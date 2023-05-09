@@ -23,6 +23,8 @@ services:
       volumes:
         - ./:/var/www/html
         - ./nginx/conf.d/:/etc/nginx/conf.d/
+        - ./ssl/eitm-sp.crt:/etc/ssl/certs/eitm-sp.crt
+        - ./ssl/eitm-sp.key:/etc/ssl/private/eitm-sp.key
       depends_on:
         - app
         - mysql
