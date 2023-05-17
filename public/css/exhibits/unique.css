@@ -1,0 +1,42 @@
+.gallery
+{
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    margin: 0 1% 0 0;
+}
+
+.gallery-content
+{
+    height: 100%;
+    overflow-y: scroll; /* Enable scrolling to reveal hidden content */
+}
+
+.gallery-image
+{
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.page-container
+{
+    display: flex;
+    height: 100vh; /* Set the container to full viewport height */
+}
+
+.right-content
+{
+    flex: 1; /* Allow the right-side content to grow and occupy remaining space */
+    padding: 10px;
+}
+
+.card
+{
+    margin: 0 0 0 1%;
+}
+
+.text-block
+{
+    text-align: justify;
+}

@@ -13,6 +13,12 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
+    <!-- CSS links for specific modification of pages -->
+    @yield('css_files')
+
+    <!-- JS files for specific modification of pages -->
+    @yield('js_files')
+
     @laravelPWA
 
     <!-- Scripts -->
@@ -32,7 +38,9 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('exhibits.index') }}">Exhibits</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
