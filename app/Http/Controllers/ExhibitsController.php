@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 
+use App\Models\Exhibit;
+
 class ExhibitsController extends Controller
 {
     public function index(Request $request)
@@ -15,12 +17,14 @@ class ExhibitsController extends Controller
             $uniqueName = $request->input('unique_name');
             return redirect()->route('exhibits.unique', ['unique_name' => $uniqueName]);
         }
+        $exhibits = Exhibit::all();
 
-        return view('exhibits.index');
+        return view('exhibits.index', compact('exhibits'));
     }
 
     public function showUnique($unique_name): View
     {
+        $unique_name = strtolower($unique_name);
         $exhibit = DB::table('exhibits')->where('unique_name', $unique_name)->first();
 
         if(!$exhibit)
