@@ -1,16 +1,29 @@
 var staticCacheName = "pwa-v" + new Date().getTime();
 var filesToCache = [
-    '/offline',
-    '/css/app.css',
-    '/js/app.js',
-    '/images/icons/icon-72x72.png',
-    '/images/icons/icon-96x96.png',
-    '/images/icons/icon-128x128.png',
-    '/images/icons/icon-144x144.png',
-    '/images/icons/icon-152x152.png',
-    '/images/icons/icon-192x192.png',
-    '/images/icons/icon-384x384.png',
-    '/images/icons/icon-512x512.png',
+    // styles
+    '/css/bootstrap.css',
+    '/css/exhibits/index.css',
+    '/css/exhibits/unique.css',
+    '/js/bootstrap.bundle.min.js',
+    //views
+    '/',
+    '/home',
+    '/test',
+    '/exhibits',
+    '/exhibits/gt40',
+    '/exhibits/etype',
+    '/exhibits/veyron',
+    '/exhibits/quattro',
+    '/exhibits/mini',
+    '/exhibits/mustang',
+    '/exhibits/beetle',
+    '/exhibits/porsche911',
+    '/exhibits/300sl',
+    '/exhibits/mclarenF1',
+    '/exhibits/xj220',
+    '/exhibits/testarossa',
+    // images
+    '/images/icons/museum.png',
 ];
 
 // Cache on install
@@ -38,15 +51,169 @@ self.addEventListener('activate', event => {
     );
 });
 
+let online = true
 // Serve from Cache
 self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                return response || fetch(event.request);
-            })
-            .catch(() => {
-                return caches.match('offline');
-            })
-    )
+    if (event.request.method === 'POST') {
+        if (!navigator.onLine) {
+            online = false
+            event.respondWith(
+                savePostData(event.request)
+                    .then(() => {
+                        return Response.redirect('/home', 302);
+                    })
+            );
+        } else {
+            event.respondWith(fetch(event.request));
+        }
+    } else {
+        if (!online && navigator.onLine) {
+            online = true
+            sendCachedRequests().then(r => console.log("Sended!"));
+        }
+
+        event.respondWith(
+            fetch(event.request)
+                .then((response) => {
+                    // response from server, cache update
+                    const clonedResponse = response.clone();
+                    caches.open(staticCacheName)
+                        .then((cache) => {
+                            cache.put(event.request, clonedResponse);
+                        });
+                    return response;
+                })
+                .catch(() => {
+                    // response from cache
+                    return caches.match(event.request);
+                })
+        );
+    }
 });
+
+let iterator = 0;
+function savePostData(request) {
+    return new Promise((resolve, reject) => {
+        const openRequest = indexedDB.open('requestDatabase', 2);
+        openRequest.onerror = () => {
+            reject(new Error('Error while opening storage'));
+        };
+
+        openRequest.onupgradeneeded = () => {
+            const db = openRequest.result;
+            if (!db.objectStoreNames.contains('postData')) {
+                const objectStore = db.createObjectStore('postData', {keyPath: 'id'});
+            }
+        };
+
+        openRequest.onsuccess = async () => {
+            const db = openRequest.result;
+
+            const clonedRequest = request.clone();
+            const requestUrl = clonedRequest.url;
+            const requestBody = await clonedRequest.text();
+
+            const transaction = db.transaction('postData', 'readwrite');
+            const store = transaction.objectStore('postData');
+
+            const requestObject = {id: iterator++, url: requestUrl, body: requestBody};
+            const putRequest = store.put(requestObject);
+
+            putRequest.onerror = () => {
+                reject(new Error('Error while saving data'));
+            };
+            putRequest.onsuccess = () => {
+                resolve();
+            };
+            transaction.oncomplete = () => {
+                db.close();
+            };
+        };
+    });
+}
+
+function sendCachedRequests() {
+    return new Promise((resolve, reject) => {
+        const openRequest = indexedDB.open('requestDatabase', 2);
+
+        openRequest.onerror = () => {
+            reject(new Error('Error while opening storage'));
+        };
+
+        openRequest.onupgradeneeded = () => {
+            const db = openRequest.result;
+
+            if (!db.objectStoreNames.contains('postData')) {
+                const objectStore = db.createObjectStore('postData', {keyPath: 'id'});
+            }
+        };
+
+        openRequest.onsuccess = () => {
+            const db = openRequest.result;
+            const transaction = db.transaction('postData', 'readonly');
+            const store = transaction.objectStore('postData');
+
+            const getRequest = store.get(iterator - 1);
+
+            getRequest.onsuccess = (event) => {
+                const requestObject = event.target.result;
+
+                if (requestObject) {
+                    const {url, body, headers} = requestObject;
+                    const params = new URLSearchParams(body);
+                    const formData = new FormData();
+                    formData.append("question1", params.get('question1'))
+                    formData.append("question2", params.get('question2'))
+                    formData.append("question3", params.get('question3'))
+                    formData.append("question4", params.get('question4'))
+                    formData.append("question5", params.get('question5'))
+                    formData.append("question6", params.get('question6'))
+                    formData.append("question7", params.get('question7'))
+                    formData.append("question8", params.get('question8'))
+                    formData.append("question9", params.get('question9'))
+                    formData.append("question10", params.get('question10'))
+                    formData.append("_token", params.get('_token'))
+                    const request = new Request(url, {method: 'POST', body: formData});
+
+                    fetch(request).catch((error) => console.log("Still offline"))
+                        .then((response) => {
+                            if (response && response.ok) {
+                                const deleteDB = indexedDB.open('requestDatabase', 2);
+                                deleteDB.onsuccess = () => {
+                                    const deleteD = deleteDB.result;
+                                    const deleteTransaction = deleteD.transaction('postData', 'readwrite');
+                                    const deleteStore = deleteTransaction.objectStore('postData');
+                                    const deleteRequest = deleteStore.delete(iterator - 1);
+
+                                    deleteRequest.onsuccess = (event) => {
+                                        console.log('Object deleted successfully');
+                                    };
+
+                                    deleteRequest.onerror = (event) => {
+                                        console.error('Error deleting object:', event.target.error);
+                                    };
+
+                                    deleteTransaction.oncomplete = () => {
+                                        console.log('Delete transaction completed');
+                                    };
+                                }
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("Error while sending POST request", error)
+                        });
+
+                    getRequest.onerror = () => {
+                        reject(new Error('Error while selecting data'));
+                    };
+
+                    transaction.oncomplete = () => {
+                        db.close();
+                    };
+                }
+            }
+        }
+
+    });
+
+}

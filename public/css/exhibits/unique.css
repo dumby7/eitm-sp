@@ -12,6 +12,13 @@
     overflow-y: scroll; /* Enable scrolling to reveal hidden content */
 }
 
+.car-image {
+    max-width: 50%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
 .gallery-image
 {
     max-width: 100%;
