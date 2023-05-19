@@ -28,7 +28,7 @@
                     <div class="gallery">
                         <div class="gallery-content">
                             @foreach($imagePaths as $path)
-                                <img src="{{ asset('images/' . $path) }}" alt="{{ $exhibit->title }}" class="gallery-image">
+                                <img src="{{ asset('images/' . $path) }}" alt="{{ $exhibit->title }}" class="gallery-image" onerror="handleImageError(this)">
                             @endforeach
                         </div>
                     </div>
@@ -45,4 +45,13 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function handleImageError(image) {
+            if (!navigator.onLine) {
+                image.src = '/images/exhibits/offline.jpg';
+            }
+        }
+    </script>
+
 @endsection
