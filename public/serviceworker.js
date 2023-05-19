@@ -65,7 +65,27 @@ self.addEventListener("fetch", event => {
                     })
             );
         } else {
-            event.respondWith(fetch(event.request));
+            event.respondWith(fetch(event.request).then((response) => {
+                if (event.request.url.endsWith("/login")) {
+                    caches.open(staticCacheName).then(function (cache) {
+                        cache.delete('/');
+                        cache.delete('/exhibits');
+                        cache.delete('/home');
+                        return cache.delete('/test');
+                    }).then(function () {
+                        return caches.open(staticCacheName);
+                    }).then(function (cache) {
+                        return cache.addAll([
+                            '/', // Seznam pohledů pro cachování
+                            '/home',
+                            '/test',
+                            '/exhibits'
+                        ]);
+                    });
+                }
+                return response;
+            }));
+
         }
     } else {
         if (!online && navigator.onLine) {
@@ -93,6 +113,7 @@ self.addEventListener("fetch", event => {
 });
 
 let iterator = 0;
+
 function savePostData(request) {
     return new Promise((resolve, reject) => {
         const openRequest = indexedDB.open('requestDatabase', 2);
