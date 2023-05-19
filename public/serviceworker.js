@@ -24,6 +24,7 @@ var filesToCache = [
     '/exhibits/testarossa',
     // images
     '/images/icons/museum.png',
+    '/images/exhibits/offline.jpg',
 ];
 
 // Cache on install
