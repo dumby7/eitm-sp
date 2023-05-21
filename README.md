@@ -17,7 +17,7 @@ Install Node.js: https://nodejs.org/en/download
 
 Install XAMPP: https://www.apachefriends.org/download.html
 
-## Installtion
+## Installation
 
 Clone the repo:
 
@@ -37,7 +37,7 @@ cp .env.example .env
 ```
 and set values as needed.
 
-## Runing a docker version
+## Running locally using docker
 
 Run the docker container in a detached mode:
 ```bash
@@ -49,6 +49,12 @@ Compile css and js:
 ```bash
 sail npm install && sail npm run build
 ```
+
+Or for development using automatic css hot refreshing:
+```bash
+sail npm install && sail npm run dev
+```
+
 
 Generate app key:
 ```bash
@@ -72,7 +78,7 @@ PHPMyAdmin is exposed at http://localhost:8001/
 
 Used https://www.digitalocean.com/community/tutorials/how-to-set-up-laravel-nginx-and-mysql-with-docker-compose-on-ubuntu-20-04 for production deployment. 
 
-## Runing a local version
+## Running a local version using XAMPP webserver
 
 Modify your *.env* file inside the root folder of the project 
 ```code
@@ -95,6 +101,12 @@ Run these commands in terminal for compiling css and js, where is project on you
 ```bash
 npm install
 npm run build
+```
+
+Or for development using automatic css hot refreshing:
+```bash
+npm install
+npm run dev
 ```
 
 Generate app key:
