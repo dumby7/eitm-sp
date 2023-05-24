@@ -70,6 +70,18 @@ self.addEventListener("fetch", event => {
                     caches.open(staticCacheName).then(function (cache) {
                         cache.delete('/');
                         cache.delete('/exhibits');
+                        cache.delete('/exhibits/gt40');
+                        cache.delete('/exhibits/etype');
+                        cache.delete('/exhibits/veyron');
+                        cache.delete('/exhibits/quattro');
+                        cache.delete('/exhibits/mini');
+                        cache.delete('/exhibits/mustang');
+                        cache.delete('/exhibits/beetle');
+                        cache.delete('/exhibits/porsche911');
+                        cache.delete('/exhibits/300sl');
+                        cache.delete('/exhibits/mclarenF1');
+                        cache.delete('/exhibits/xj220');
+                        cache.delete('/exhibits/testarossa');
                         cache.delete('/home');
                         return cache.delete('/test');
                     }).then(function () {
@@ -79,7 +91,19 @@ self.addEventListener("fetch", event => {
                             '/', // Seznam pohledů pro cachování
                             '/home',
                             '/test',
-                            '/exhibits'
+                            '/exhibits',
+                            '/exhibits/gt40',
+                            '/exhibits/etype',
+                            '/exhibits/veyron',
+                            '/exhibits/quattro',
+                            '/exhibits/mini',
+                            '/exhibits/mustang',
+                            '/exhibits/beetle',
+                            '/exhibits/porsche911',
+                            '/exhibits/300sl',
+                            '/exhibits/mclarenF1',
+                            '/exhibits/xj220',
+                            '/exhibits/testarossa',
                         ]);
                     });
                 }
@@ -100,6 +124,7 @@ self.addEventListener("fetch", event => {
                     const clonedResponse = response.clone();
                     caches.open(staticCacheName)
                         .then((cache) => {
+                            console.log("update cache")
                             cache.put(event.request, clonedResponse);
                         });
                     return response;
